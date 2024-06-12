@@ -10,13 +10,9 @@ using IdentityServer4.Services;
 using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using SSO.Controllers;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
+using SSO.Models;
 
 namespace SSO.Controllers.Account
 {

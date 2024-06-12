@@ -1,7 +1,6 @@
-using System;
 using IdentityServer4.Models;
-using IdentityServerHost.Quickstart.UI;
 using Microsoft.AspNetCore.Mvc;
+using SSO.Controllers.Account;
 
 namespace SSO.Controllers
 {
