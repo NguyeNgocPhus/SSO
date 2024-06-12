@@ -5,10 +5,12 @@ using SSO.Data;
 using Microsoft.EntityFrameworkCore;
 using SSO.Controllers;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
+// Persistence Layer
+//dotnet ef migrations add "Init" --project DoAn.Persistence --context ApplicationDbContext --startup-project DoAn.Api --output-dir Migrations 
+// dotnet ef database update --project DoAn.Persistence  --startup-project DoAn.Api --context ApplicationDbContext   
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContextPool<DbContext, ApplicationDbContext>(options =>
                 options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -20,6 +22,7 @@ builder.Services.AddIdentityCore<ApplicationUser>(opt =>
     opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(2); // Default 5
     opt.Lockout.MaxFailedAccessAttempts = 3; // Default 5
 })
+
     .AddSignInManager<SignInManager<ApplicationUser>>()
            .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.Configure<IdentityOptions>(options =>
@@ -42,17 +45,35 @@ builder.Services.AddIdentityServer(options =>
     options.Events.RaiseInformationEvents = true;
     options.Events.RaiseFailureEvents = true;
     options.Events.RaiseSuccessEvents = true;
+    options.Authentication.CookieSameSiteMode = SameSiteMode.None;
 
     // see https://identityserver4.readthedocs.io/en/latest/topics/resources.html
     //options.EmitStaticAudienceClaim = true;
 })
-     //.AddTestUsers(TestUsers.Users)
+        //.AddTestUsers(TestUsers.Users)
         .AddInMemoryIdentityResources(Config.IdentityResources)
         .AddInMemoryApiScopes(Config.ApiScopes)
         .AddInMemoryClients(Config.Clients)
         //.AddAspNetIdentity<ApplicationUser>()
         .AddDeveloperSigningCredential();
-builder.Services.AddAuthentication();
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+}).AddCookie( options =>
+{
+    options.Cookie.Name = "idsrv";
+    //options.Cookie.Path = "/";
+    //options.ExpireTimeSpan = TimeSpan.FromDays(30);
+    //options.Cookie.SameSite = SameSiteMode.None;
+    //options.SlidingExpiration = true;
+    ////options.Cookie.Domain = "lab.connect247.vn";
+
+    //options.Cookie.IsEssential = true;
+    //options.Cookie.HttpOnly = false;
+    //options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+});
 
 
 var app = builder.Build();

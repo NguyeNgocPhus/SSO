@@ -203,6 +203,17 @@ namespace SSO.Controllers.Account
         {
             return View();
         }
+        [HttpPost]
+
+        public async Task<IActionResult> CreateUser()
+        {
+
+            var user = new ApplicationUser() { Email = "phunn@gmail.com", UserName = "phunn" };
+
+            await _userManager.CreateAsync(user, "123@123aA");
+            return Ok("ok");
+        }
+
 
 
         /*****************************************/
