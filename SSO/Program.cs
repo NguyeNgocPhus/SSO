@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using SSO.Controllers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using SSO.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 // Persistence Layer
@@ -74,6 +75,7 @@ builder.Services.AddIdentityServer(options =>
     .AddInMemoryIdentityResources(Config.IdentityResources)
     .AddInMemoryApiScopes(Config.ApiScopes)
     .AddInMemoryClients(Config.Clients)
+    .AddProfileService<ProfileService>(); 
     // .AddAspNetIdentity<ApplicationUser>()
     ;
 
