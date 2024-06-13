@@ -38,24 +38,6 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequiredUniqueChars = 1;
     options.Lockout.AllowedForNewUsers = true;
 });
-
-builder.Services.AddIdentityServer(options =>
-{
-    options.Events.RaiseErrorEvents = true;
-    options.Events.RaiseInformationEvents = true;
-    options.Events.RaiseFailureEvents = true;
-    options.Events.RaiseSuccessEvents = true;
-    options.Authentication.CookieSameSiteMode = SameSiteMode.None;
-
-    // see https://identityserver4.readthedocs.io/en/latest/topics/resources.html
-    //options.EmitStaticAudienceClaim = true;
-})
-        //.AddTestUsers(TestUsers.Users)
-        .AddInMemoryIdentityResources(Config.IdentityResources)
-        .AddInMemoryApiScopes(Config.ApiScopes)
-        .AddInMemoryClients(Config.Clients)
-        //.AddAspNetIdentity<ApplicationUser>()
-        .AddDeveloperSigningCredential();
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -76,6 +58,27 @@ builder.Services.AddAuthentication(options =>
 });
 
 
+builder.Services.AddIdentityServer(options =>
+    {
+        options.Events.RaiseErrorEvents = true;
+        options.Events.RaiseInformationEvents = true;
+        options.Events.RaiseFailureEvents = true;
+        options.Events.RaiseSuccessEvents = true;
+        options.Authentication.CookieSameSiteMode = SameSiteMode.None;
+
+        // see https://identityserver4.readthedocs.io/en/latest/topics/resources.html
+        options.EmitStaticAudienceClaim = true;
+    })
+    .AddDeveloperSigningCredential()
+    //.AddTestUsers(TestUsers.Users)
+    .AddInMemoryIdentityResources(Config.IdentityResources)
+    .AddInMemoryApiScopes(Config.ApiScopes)
+    .AddInMemoryClients(Config.Clients)
+    // .AddAspNetIdentity<ApplicationUser>()
+    ;
+
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -90,9 +93,10 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseAuthorization();
 app.UseIdentityServer();
 
-app.UseAuthorization();
+
 
 app.MapControllerRoute(
     name: "default",
