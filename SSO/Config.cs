@@ -46,7 +46,8 @@ namespace SSO
 
                     AllowedGrantTypes = GrantTypes.Code,
                     RequireClientSecret = false,
-                    RequireConsent = false,
+                    RequireConsent = true,
+                   
                     // where to redirect to after login
                     RedirectUris = { "https://localhost:5002/signin-oidc" },
 

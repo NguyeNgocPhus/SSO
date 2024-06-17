@@ -39,25 +39,6 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequiredUniqueChars = 1;
     options.Lockout.AllowedForNewUsers = true;
 });
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-}).AddCookie( options =>
-{
-    options.Cookie.Name = "idsrv";
-    //options.Cookie.Path = "/";
-    //options.ExpireTimeSpan = TimeSpan.FromDays(30);
-    //options.Cookie.SameSite = SameSiteMode.None;
-    //options.SlidingExpiration = true;
-    ////options.Cookie.Domain = "lab.connect247.vn";
-
-    //options.Cookie.IsEssential = true;
-    //options.Cookie.HttpOnly = false;
-    //options.Cookie.SecurePolicy = CookieSecurePolicy.None;
-});
-
 
 builder.Services.AddIdentityServer(options =>
     {
@@ -79,6 +60,24 @@ builder.Services.AddIdentityServer(options =>
     // .AddAspNetIdentity<ApplicationUser>()
     ;
 
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+}).AddCookie(options =>
+{
+    options.Cookie.Name = "idsrv";
+    options.Cookie.Path = "/";
+    options.ExpireTimeSpan = TimeSpan.FromDays(30);
+    options.Cookie.SameSite = SameSiteMode.None;
+    options.SlidingExpiration = true;
+    ////options.Cookie.Domain = "lab.connect247.vn";
+
+    //options.Cookie.IsEssential = true;
+    //options.Cookie.HttpOnly = false;
+    //options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+});
 
 
 var app = builder.Build();
@@ -95,8 +94,11 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-app.UseAuthorization();
+
+
 app.UseIdentityServer();
+
+app.UseAuthorization();
 
 
 
