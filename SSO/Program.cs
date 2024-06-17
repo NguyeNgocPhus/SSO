@@ -1,9 +1,7 @@
 using SSO.Models;
 using SSO;
-using Microsoft.Extensions.Configuration;
 using SSO.Data;
 using Microsoft.EntityFrameworkCore;
-using SSO.Controllers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using SSO.Services;
@@ -78,7 +76,11 @@ builder.Services.AddAuthentication(options =>
     //options.Cookie.HttpOnly = false;
     //options.Cookie.SecurePolicy = CookieSecurePolicy.None;
 });
-
+builder.Services.AddCors(cors => cors.AddDefaultPolicy(policy => policy
+    .AllowAnyHeader()
+    .AllowAnyMethod()
+    .AllowAnyOrigin()
+    .WithExposedHeaders("Content-Disposition")));
 
 var app = builder.Build();
 
@@ -89,7 +91,7 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-
+app.UseCors();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 

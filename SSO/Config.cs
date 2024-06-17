@@ -46,10 +46,10 @@ namespace SSO
 
                     AllowedGrantTypes = GrantTypes.Code,
                     RequireClientSecret = false,
-                    RequireConsent = true,
+                    RequireConsent = false,
                    
                     // where to redirect to after login
-                    RedirectUris = { "https://localhost:5002/signin-oidc" },
+                    RedirectUris = { "http://localhost:3000/signin-callback.html" },
 
                     // where to redirect to after logout
                     PostLogoutRedirectUris = { "https://localhost:5002/signout-callback-oidc" },
