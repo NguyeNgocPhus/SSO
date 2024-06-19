@@ -11,8 +11,10 @@ public class  ProfileService : IProfileService
         var user = context.Subject;
         var userClaims = new List<Claim>
         {
-            new Claim("custom_claim_1", "value_1"),
-            new Claim("custom_claim_2", "value_2")
+            new Claim("Id", "cc5aaa65-fe69-4d4d-88ef-08dc6075cb4c"),
+            new Claim("Roles", "DirectorGroup"),
+            new Claim("Roles", "DirectorUnit"),
+            new Claim("Roles", "SuperAdmin"),
             // Thêm các claim tùy chỉnh khác ở đây
         }; // Thêm các claim tùy chỉnh vào context.IssuedClaims
         context.IssuedClaims.AddRange(userClaims);

@@ -24,6 +24,7 @@ builder.Services.AddIdentityCore<ApplicationUser>(opt =>
 
     .AddSignInManager<SignInManager<ApplicationUser>>()
            .AddEntityFrameworkStores<ApplicationDbContext>();
+
 builder.Services.Configure<IdentityOptions>(options =>
 {
     options.Lockout.AllowedForNewUsers = true; // Default true
@@ -46,6 +47,9 @@ builder.Services.AddIdentityServer(options =>
         options.Events.RaiseSuccessEvents = true;
         options.Authentication.CookieSameSiteMode = SameSiteMode.None;
 
+        options.Authentication.CookieAuthenticationScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        options.Authentication.CookieLifetime = TimeSpan.FromMinutes(1);
+        options.Authentication.CookieSlidingExpiration = true;
         // see https://identityserver4.readthedocs.io/en/latest/topics/resources.html
         options.EmitStaticAudienceClaim = true;
     })
@@ -67,14 +71,12 @@ builder.Services.AddAuthentication(options =>
 {
     options.Cookie.Name = "idsrv";
     options.Cookie.Path = "/";
-    options.ExpireTimeSpan = TimeSpan.FromDays(30);
-    options.Cookie.SameSite = SameSiteMode.None;
-    options.SlidingExpiration = true;
+  
     ////options.Cookie.Domain = "lab.connect247.vn";
 
-    //options.Cookie.IsEssential = true;
-    //options.Cookie.HttpOnly = false;
-    //options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+    // options.Cookie.IsEssential = true;
+    // options.Cookie.HttpOnly = false;
+    // options.Cookie.SecurePolicy = CookieSecurePolicy.None;
 });
 builder.Services.AddCors(cors => cors.AddDefaultPolicy(policy => policy
     .AllowAnyHeader()

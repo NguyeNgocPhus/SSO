@@ -122,7 +122,7 @@ namespace SSO.Controllers.Account
                     var principal = new ClaimsPrincipal(identity);
                     await HttpContext.SignInAsync(
                         CookieAuthenticationDefaults.AuthenticationScheme,
-                        principal);
+                        principal, new AuthenticationProperties{ IsPersistent = true});
                     
                     if (context != null)
                     {
