@@ -4,6 +4,7 @@
 
 using System.Security.Claims;
 using IdentityModel;
+using IdentityServer4;
 using IdentityServer4.Events;
 using IdentityServer4.Extensions;
 using IdentityServer4.Models;
@@ -12,6 +13,7 @@ using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SSO.Models;
@@ -110,19 +112,20 @@ namespace SSO.Controllers.Account
                    
                     await _events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id, user.UserName, clientId: context?.Client.ClientId));
                     
-                    var claims = new List<Claim>
+                   
+                    var isuser = new IdentityServerUser(user.Id.ToString())
                     {
-                        new(ClaimTypes.Name, user.UserName),
-                        new("Id", user.Id),
-                        new("sub", user.Id),
-                        new(ClaimTypes.Email, user.Email),
-                    };
 
-                    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                    var principal = new ClaimsPrincipal(identity);
-                    await HttpContext.SignInAsync(
-                        CookieAuthenticationDefaults.AuthenticationScheme,
-                        principal, new AuthenticationProperties{ IsPersistent = true});
+                    };
+                    isuser.AdditionalClaims.Add(new(ClaimTypes.Name, user.UserName));
+                    isuser.AdditionalClaims.Add(new("Id", user.Id));
+                    isuser.AdditionalClaims.Add(new("sub", user.Id));
+                    isuser.AdditionalClaims.Add(new(ClaimTypes.Email, user.Email));
+
+                  
+                    AuthenticationProperties props = null;
+
+                    await HttpContext.SignInAsync(isuser, props);
                     
                     if (context != null)
                     {

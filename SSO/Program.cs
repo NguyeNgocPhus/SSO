@@ -46,12 +46,13 @@ builder.Services.AddIdentityServer(options =>
         options.Events.RaiseFailureEvents = true;
         options.Events.RaiseSuccessEvents = true;
         options.Authentication.CookieSameSiteMode = SameSiteMode.None;
-
-        options.Authentication.CookieAuthenticationScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-        options.Authentication.CookieLifetime = TimeSpan.FromMinutes(1);
+        options.Authentication.CookieLifetime = TimeSpan.FromSeconds(15);
         options.Authentication.CookieSlidingExpiration = true;
-        // see https://identityserver4.readthedocs.io/en/latest/topics/resources.html
+
+        options.Authentication.CheckSessionCookieSameSiteMode = SameSiteMode.None;
+        options.AccessTokenJwtType = "JWT";
         options.EmitStaticAudienceClaim = true;
+        options.IssuerUri = "https://localhost:5001";
     })
     .AddDeveloperSigningCredential()
     //.AddTestUsers(TestUsers.Users)
@@ -61,23 +62,12 @@ builder.Services.AddIdentityServer(options =>
     .AddProfileService<ProfileService>(); 
     // .AddAspNetIdentity<ApplicationUser>()
     ;
-
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-}).AddCookie(options =>
+builder.Services.AddAuthentication().AddCookie(options =>
 {
     options.Cookie.Name = "idsrv";
     options.Cookie.Path = "/";
-  
-    ////options.Cookie.Domain = "lab.connect247.vn";
-
-    // options.Cookie.IsEssential = true;
-    // options.Cookie.HttpOnly = false;
-    // options.Cookie.SecurePolicy = CookieSecurePolicy.None;
 });
+
 builder.Services.AddCors(cors => cors.AddDefaultPolicy(policy => policy
     .AllowAnyHeader()
     .AllowAnyMethod()
